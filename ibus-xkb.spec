@@ -2,14 +2,14 @@
 # Conditional build:
 %bcond_without	static_libs	# static library
 %bcond_without	gnomekbd	# libgnomekbd support
-%bcond_with	dconf		# dconf-based configuration
+%bcond_without	dconf		# dconf-based configuration
 %bcond_without	gconf		# GConf support
 #
 Summary:	XKB module for IBus
 Summary(pl.UTF-8):	Moduł XKB dla platformy IBus
 Name:		ibus-xkb
 Version:	1.4.99.20120525
-Release:	0.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: http://code.google.com/p/ibus/downloads/list
@@ -29,6 +29,7 @@ BuildRequires:	intltool >= 0.35.0
 BuildRequires:	pkgconfig
 BuildRequires:	python >= 1:2.5
 BuildRequires:	vala >= 2:0.14
+BuildRequires:	vala-ibus >= 1.4.99
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libxkbfile-devel
 Requires:	%{name}-libs = %{version}-%{release}
@@ -82,6 +83,20 @@ Static ibus-xkb library.
 %description static -l pl.UTF-8
 Statyczna biblioteka ibus-xkb.
 
+%package -n vala-ibus-xkb
+Summary:	Vala API for ibus-xkb library
+Summary(pl.UTF-8):	API języka Vala dla biblioteki ibus-xkb
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	vala >= 2:0.14
+Requires:	vala-ibus >= 1.4.99
+
+%description -n vala-ibus-xkb
+Vala API for ibus-xkb library.
+
+%description -n vala-ibus-xkb -l pl.UTF-8
+API języka Vala dla biblioteki ibus-xkb.
+
 %prep
 %setup -q
 
@@ -109,6 +124,24 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
+%if %{with gconf}
+%gconf_schema_install ibus-xkb.schemas
+%endif
+%if %{with dconf}
+%glib_compile_schemas
+%endif
+
+%if %{with gconf}
+%preun
+%gconf_schema_uninstall ibus-xkb.schemas
+%endif
+
+%if %{with dconf}
+%postun
+%glib_compile_schemas
+%endif
+
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
@@ -120,20 +153,21 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libexecdir}/ibus-xkb
 %attr(755,root,root) %{_libexecdir}/ibus-xkb-ui-gtk3
 %{_datadir}/ibus/component/gtkxkbpanel.xml
+%{_datadir}/ibus/component/xkb.xml
 %{_datadir}/ibus/setup-xkb
 %{_desktopdir}/ibus-setup-xkb.desktop
 %{?with_gconf:%{_sysconfdir}/gconf/schemas/ibus-xkb.schemas}
 %if %{with dconf}
 %dir %{_sysconfdir}/dconf/db/ibus.d
 %{_sysconfdir}/dconf/db/ibus.d/01-xkb
-%{_datadir}/glib-2.0/schemas/org.freedesktop.ibus.xkb.schema.xml
+%{_datadir}/glib-2.0/schemas/org.freedesktop.ibus.xkb.gschema.xml
 %{_datadir}/GConf/gsettings/ibus-xkb.convert
 %endif
 
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libibus-xkb-1.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libibus-xkb-1.0.so.0
+%attr(755,root,root) %ghost %{_libdir}/libibus-xkb-1.0.so.5
 %{_libdir}/girepository-1.0/IBusXKB-1.0.typelib
 
 %files devel
@@ -148,3 +182,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libibus-xkb-1.0.a
 %endif
+
+%files -n vala-ibus-xkb
+%defattr(644,root,root,755)
+%{_datadir}/vala/vapi/ibus-xkb-1.0.deps
+%{_datadir}/vala/vapi/ibus-xkb-1.0.vapi
