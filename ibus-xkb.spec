@@ -9,7 +9,7 @@ Summary:	XKB module for IBus
 Summary(pl.UTF-8):	Moduł XKB dla platformy IBus
 Name:		ibus-xkb
 Version:	1.4.99.20120525
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: http://code.google.com/p/ibus/downloads/list
