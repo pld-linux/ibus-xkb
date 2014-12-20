@@ -1,0 +1,18 @@
+--- ibus-xkb-1.5.0.20140114/ui/gtk3/Makefile.am.orig	2014-01-11 15:22:55.000000000 +0100
++++ ibus-xkb-1.5.0.20140114/ui/gtk3/Makefile.am	2014-12-20 10:58:06.226621255 +0100
+@@ -55,7 +55,6 @@
+ 	@GIO2_CFLAGS@ \
+ 	@GTHREAD2_CFLAGS@ \
+ 	@GTK3_CFLAGS@ \
+-	@X11_CFLAGS@ \
+ 	@IBUS_CFLAGS@ \
+ 	$(INCLUDES) \
+ 	-DG_LOG_DOMAIN=\"IBUS\" \
+@@ -76,7 +75,6 @@
+ 	@GIO2_LIBS@ \
+ 	@GTHREAD2_LIBS@ \
+ 	@GTK3_LIBS@ \
+-	@X11_LIBS@ \
+ 	@IBUS_LIBS@ \
+ 	-lXi \
+ 	$(libibus_xkb) \

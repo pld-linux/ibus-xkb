@@ -8,16 +8,22 @@
 Summary:	XKB module for IBus
 Summary(pl.UTF-8):	Moduł XKB dla platformy IBus
 Name:		ibus-xkb
-Version:	1.4.99.20120525
-Release:	2
+Version:	1.5.0.20140114
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: http://code.google.com/p/ibus/downloads/list
-Source0:	http://ibus.googlecode.com/files/%{name}-%{version}.tar.gz
-# Source0-md5:	c29db74b3add447f58a1bed2d4d55138
-URL:		http://code.google.com/p/ibus/
+Source0:	https://github.com/ibus/ibus-xkb/archive/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	c0bc5be7f0c068bea1e4785c5b60694b
+Patch0:		%{name}-vala.patch
+Patch1:		%{name}-am.patch
+URL:		https://github.com/ibus/ibus-xkb/
 %{?with_gconf:BuildRequires:	GConf2-devel >= 2.12}
 %{?with_gnomekbd:BuildRequires:	atk-devel}
+BuildRequires:	autoconf >= 2.62
+BuildRequires:	automake >= 1:1.10
+# dbus-launch used in dconf configuration generation
+%{?with_dconf:BuildRequires:	dbus-x11}
 %{?with_dconf:BuildRequires:	dconf-devel >= 0.7.5}
 BuildRequires:	gettext-devel
 BuildRequires:	glib2-devel >= 1:2.26.0
@@ -25,15 +31,18 @@ BuildRequires:	gobject-introspection-devel >= 0.6.8
 BuildRequires:	gtk+3-devel >= 3.0
 BuildRequires:	ibus-devel >= 1.4.99
 BuildRequires:	intltool >= 0.35.0
+BuildRequires:	iso-codes
 %{?with_gnomekbd:BuildRequires:	libgnomekbd-devel}
+BuildRequires:	libtool
 BuildRequires:	pkgconfig
 BuildRequires:	python >= 1:2.5
-BuildRequires:	vala >= 2:0.14
+BuildRequires:	vala >= 2:0.24
 BuildRequires:	vala-ibus >= 1.4.99
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libxkbfile-devel
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	ibus >= 1.4.99
+Requires:	iso-codes
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/ibus
@@ -99,11 +108,19 @@ API języka Vala dla biblioteki ibus-xkb.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
 
 %build
+%{__libtoolize}
+%{__intltoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	%{?with_dconf:--enable-dconf} \
-	%{!?with_gconf:--disable-gconf} \
+	%{?with_gconf:--enable-gconf} \
 	%{!?with_gnomekbd:--disable-libgnomekbd} \
 	--disable-silent-rules \
 	%{?with_static_libs:--enable-static}
@@ -147,10 +164,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog README
+%doc AUTHORS README
 %attr(755,root,root) %{_bindir}/ibus-setup-xkb
 %attr(755,root,root) %{_libexecdir}/ibus-engine-xkb
-%attr(755,root,root) %{_libexecdir}/ibus-xkb
 %attr(755,root,root) %{_libexecdir}/ibus-xkb-ui-gtk3
 %{_datadir}/ibus/component/gtkxkbpanel.xml
 %{_datadir}/ibus/component/xkb.xml
