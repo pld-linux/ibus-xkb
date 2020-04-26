@@ -12,21 +12,13 @@ Version:	1.5.0.20140114
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
-#Source0Download: http://code.google.com/p/ibus/downloads/list
-<<<<<<< Updated upstream
+#Source0Download: https://github.com/ibus/ibus-xkb/releases
 Source0:	https://github.com/ibus/ibus-xkb/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	c0bc5be7f0c068bea1e4785c5b60694b
 Patch0:		%{name}-vala.patch
 Patch1:		%{name}-am.patch
 URL:		https://github.com/ibus/ibus-xkb/
-=======
-Source0:	https://github.com/fujiwarat/ibus-xkb/archive/%{version}.tar.gz?/%{name}-%{version}.tar.gz
-# Source0-md5:	c0bc5be7f0c068bea1e4785c5b60694b
-URL:		http://code.google.com/p/ibus/
->>>>>>> Stashed changes
 %{?with_gconf:BuildRequires:	GConf2-devel >= 2.12}
-BuildRequires:	autoconf
-BuildRequires:	automake
 %{?with_gnomekbd:BuildRequires:	atk-devel}
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.10
@@ -120,13 +112,8 @@ API języka Vala dla biblioteki ibus-xkb.
 %patch1 -p1
 
 %build
-<<<<<<< Updated upstream
-%{__libtoolize}
-%{__intltoolize}
-=======
 %{__intltoolize}
 %{__libtoolize}
->>>>>>> Stashed changes
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
